@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experimental Portfolio | Cyberpunk KPR-Style Interface</title>
+  <link rel="stylesheet" href="/_nuxt/entry.6ad9710f.css">
+  <link rel="stylesheet" href="/_nuxt/custom-material.3e023a0d.css">
+  <style>
+    :root {
+      --bg-dark: #0b0c0e;
+      --card-bg: #121418;
+      --accent: #ff3e3e;
+      --accent-glow: rgba(255, 62, 62, 0.4);
+      --text-main: #ffffff;
+      --text-dim: #8a8f9d;
+      --border-color: rgba(255, 255, 255, 0.12);
+      --font-mono: 'Courier New', Courier, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background Cyber Grid & Noise */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    /* Top KPR Frame Bar */
+    .top-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 65px;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(11, 12, 14, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .brand-logo .dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Audio Toggle Switch */
+    .audio-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border-color);
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+      cursor: pointer;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .audio-toggle:hover {
+      border-color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main Container */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 2rem 60px;
+    }
+
+    .hero-header {
+      margin-bottom: 4rem;
+    }
+
+    .sub-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sub-title::before {
+      content: '//';
+      color: var(--text-dim);
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    /* KPR Interactive Menu Container */
+    .kpr-menu-section {
+      margin-top: 3rem;
+    }
+
+    .menu-header-bar {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* KPR Scramble & Invert Navigation Items */
+    .kpr-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .kpr-nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.2s ease;
+    }
+
+    .kpr-nav-item:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateX(6px);
+    }
+
+    /* Sliding Fill Effect */
+    .kpr-nav-item .fill-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--text-main);
+      transform: translateX(-101%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1;
+    }
+
+    .kpr-nav-item:hover .fill-bg {
+      transform: translateX(0%);
+    }
+
+    /* Nav Item Contents */
+    .kpr-nav-item .nav-left {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: color 0.25s ease;
+    }
+
+    .kpr-nav-item .nav-idx {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      transition: color 0.25s ease;
+    }
+
+    .kpr-nav-item:hover .nav-idx,
+    .kpr-nav-item:hover .scramble-text {
+      color: #000000 !important;
+    }
+
+    .kpr-nav-item .scramble-text {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      transition: color 0.25s ease;
+    }
+
+    .kpr-nav-item .nav-right {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      transition: color 0.25s ease;
+    }
+
+    .kpr-nav-item:hover .nav-right {
+      color: #000000;
+    }
+
+    .kpr-nav-item .arrow-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+
+    .kpr-nav-item:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+
+    /* Content Showcase Section */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .project-card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 1.75rem;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+      transition: all 0.3s ease;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .project-card .card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-card p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+<script>try{if(localStorage.getItem("__framer_force_showing_editorbar_since")){const n=document.createElement("link");n.rel="modulepreload";n.href="https://framer.com/edit/init.mjs";document.head.appendChild(n)}}catch(e){}</script>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Top Navigation Frame -->
+  <header class="top-frame">
+    <div class="brand-logo">
+      <div class="dot"></div>
+      <span>KPR // PORTFOLIO</span>
+    </div>
+    <div class="audio-toggle" id="audioToggle">
+      <span id="audioStatus">AUDIO: ON</span>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-wrapper">
+
+    <section class="hero-header">
+      <div class="sub-title">EXPERIMENTAL INTERFACE v2.0</div>
+      <h1 class="hero-title">CREATIVE DEVELOPER & DESIGNER</h1>
+    </section>
+
+    <!-- KPR Menu Interactive Section -->
+    <section class="kpr-menu-section">
+      <div class="menu-header-bar">
+        <span>// NAVIGATION MATRIX</span>
+        <span>HOVER TO DECRYPT</span>
+      </div>
+
+      <div class="kpr-nav-list">
+
+        <!-- Item 01 -->
+        <div class="kpr-nav-item" data-text="SELECTED WORKS">
+          <div class="fill-bg"></div>
+          <div class="nav-left">
+            <span class="nav-idx">[01]</span>
+            <span class="scramble-text">SELECTED WORKS</span>
+          </div>
+          <div class="nav-right">
+            <span>EXPLORE</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </div>
+        </div>
+
+        <!-- Item 02 -->
+        <div class="kpr-nav-item" data-text="EXPERIENCE & BIO">
+          <div class="fill-bg"></div>
+          <div class="nav-left">
+            <span class="nav-idx">[02]</span>
+            <span class="scramble-text">EXPERIENCE & BIO</span>
+          </div>
+          <div class="nav-right">
+            <span>ABOUT</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </div>
+        </div>
+
+        <!-- Item 03 -->
+        <div class="kpr-nav-item" data-text="CYBER LAB & LABS">
+          <div class="fill-bg"></div>
+          <div class="nav-left">
+            <span class="nav-idx">[03]</span>
+            <span class="scramble-text">CYBER LAB & LABS</span>
+          </div>
+          <div class="nav-right">
+            <span>PROJECTS</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </div>
+        </div>
+
+        <!-- Item 04 -->
+        <div class="kpr-nav-item" data-text="CONTACT PROTOCOL">
+          <div class="fill-bg"></div>
+          <div class="nav-left">
+            <span class="nav-idx">[04]</span>
+            <span class="scramble-text">CONTACT PROTOCOL</span>
+          </div>
+          <div class="nav-right">
+            <span>INITIATE</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="showcase-grid">
+      <div class="project-card">
+        <div class="card-tag">// FEATURED EXPERIMENT</div>
+        <h3>KPR Verse WebGL Replica</h3>
+        <p>Interactive 3D Three.js experience with custom shaders, audio triggers, and GSAP scroll transitions.</p>
+      </div>
+
+      <div class="project-card">
+        <div class="card-tag">// SHADER & GRAPHICS</div>
+        <h3>Cyber Matrix Text Scramble</h3>
+        <p>Procedural text deciphering on hover with frequency modulation and cubic-bezier fill transitions.</p>
+      </div>
+
+      <div class="project-card">
+        <div class="card-tag">// SYSTEM ARCHITECTURE</div>
+        <h3>Nuxt 3 Engine Optimization</h3>
+        <p>Zero-latency local HTTP server integration with Web Audio API sound synthesis and preloader observers.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Audio Sound Effects Setup
+    let audioEnabled = true;
+    const hoverAudio = new Audio('/audio/UI_menu_rollover.mp3');
+    const openAudio = new Audio('/audio/UI_menu_OPEN.mp3');
+    hoverAudio.volume = 0.4;
+    openAudio.volume = 0.5;
+
+    const audioToggle = document.getElementById('audioToggle');
+    const audioStatus = document.getElementById('audioStatus');
+
+    audioToggle.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      audioStatus.innerText = audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF';
+      if (audioEnabled) {
+        openAudio.currentTime = 0;
+        openAudio.play().catch(() => {});
+      }
+    });
+
+    // KPR Scramble Text Characters
+    const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$@%&*!?▲▼░▒▓█';
+
+    // Apply Scramble & Hover Effects to Navigation Items
+    const navItems = document.querySelectorAll('.kpr-nav-item');
+
+    navItems.forEach(item => {
+      const textEl = item.querySelector('.scramble-text');
+      const originalText = item.getAttribute('data-text');
+      let interval = null;
+
+      item.addEventListener('mouseenter', () => {
+        // Play Audio SFX
+        if (audioEnabled) {
+          hoverAudio.currentTime = 0;
+          hoverAudio.play().catch(() => {});
+        }
+
+        // Trigger Scramble Text Animation
+        let iteration = 0;
+        clearInterval(interval);
+
+        interval = setInterval(() => {
+          textEl.innerText = originalText
+            .split('')
+            .map((char, index) => {
+              if (index < iteration) {
+                return originalText[index];
+              }
+              return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+            })
+            .join('');
+
+          if (iteration >= originalText.length) {
+            clearInterval(interval);
+          }
+
+          iteration += 1 / 2;
+        }, 30);
+      });
+
+      item.addEventListener('mouseleave', () => {
+        clearInterval(interval);
+        textEl.innerText = originalText;
+      });
+
+      item.addEventListener('click', () => {
+        if (audioEnabled) {
+          openAudio.currentTime = 0;
+          openAudio.play().catch(() => {});
+        }
+      });
+    });
+  </script>
+</body>
+</html>

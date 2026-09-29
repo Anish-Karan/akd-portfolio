@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/artwork", "destination": "/artwork.html" },
+    { "source": "/projects_experimental", "destination": "/projects_experimental.html" },
+    { "source": "/portfolio", "destination": "/portfolio.html" }
+  ]
+}

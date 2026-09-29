@@ -1,0 +1,22 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/artwork"
+  to = "/artwork.html"
+  status = 200
+
+[[redirects]]
+  from = "/projects_experimental"
+  to = "/projects_experimental.html"
+  status = 200
+
+[[redirects]]
+  from = "/portfolio"
+  to = "/portfolio.html"
+  status = 200
