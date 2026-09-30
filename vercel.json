@@ -1,9 +1,25 @@
 {
+  "version": 2,
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/artwork", "destination": "/artwork.html" },
-    { "source": "/projects_experimental", "destination": "/projects_experimental.html" },
-    { "source": "/portfolio", "destination": "/portfolio.html" }
+  "routes": [
+    {
+      "src": "/about(\\.html)?",
+      "dest": "/about.html"
+    },
+    {
+      "src": "/artwork(\\.html)?",
+      "dest": "/artwork.html"
+    },
+    {
+      "src": "/projects_experimental(\\.html)?",
+      "dest": "/projects_experimental.html"
+    },
+    {
+      "src": "/portfolio(\\.html)?",
+      "dest": "/portfolio.html"
+    },
+    {
+      "handle": "filesystem"
+    }
   ]
 }
