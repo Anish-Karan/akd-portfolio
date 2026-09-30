@@ -1,25 +1,3 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "routes": [
-    {
-      "src": "/about(\\.html)?",
-      "dest": "/about.html"
-    },
-    {
-      "src": "/artwork(\\.html)?",
-      "dest": "/artwork.html"
-    },
-    {
-      "src": "/projects_experimental(\\.html)?",
-      "dest": "/projects_experimental.html"
-    },
-    {
-      "src": "/portfolio(\\.html)?",
-      "dest": "/portfolio.html"
-    },
-    {
-      "handle": "filesystem"
-    }
-  ]
+  "cleanUrls": true
 }
